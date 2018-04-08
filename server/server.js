@@ -10,47 +10,62 @@ var app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, username");
+    // res.header("Access-Control-Allow-Headers", "username");
+    next();
+});
 
 app.post('/todos', (req, res) => {
-    var todo = new Todo({
-        text: req.body.text
-    });
 
-    todo.save().then((doc)=>{
-        res.send(doc);
-    }, (e)=>{
-        res.status(400).send(e);
-    });
+    if (req.headers.username == "test1") {
+
+        var todo = new Todo({
+            text: req.body.text
+        });
+
+        todo.save().then((doc) => {
+            res.send(doc);
+        }, (e) => {
+            res.status(400).send(e);
+        });
+
+    }else {
+        return res.status(400).send();
+    }
+
+
 });
 
 app.get('/todos', (req, res) => {
-    Todo.find().then((todos)=>{
-        res.send({todos});
-    }, (e)=>{
+    Todo.find().then((todos) => {
+        res.send({ todos });
+    }, (e) => {
         res.status(400).send(e);
     });
 });
 
-app.get('/todos/:id', (req, res)=>{
+app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
 
-    if(!ObjectID.isValid(id)) {
+    if (!ObjectID.isValid(id)) {
         return res.status(404).send();
     }
 
-    Todo.findById(id).then((todo)=>{
-        if(!todo) {
+    Todo.findById(id).then((todo) => {
+        if (!todo) {
             return res.status(404).send();
         }
 
-        res.send({todo});
+        res.send({ todo });
 
-    }).catch((e)=>{
+    }).catch((e) => {
         res.status(400).send();
     });
 
 });
 
-app.listen(port, ()=>{
-    console.log('Started on port '+port);
+app.listen(port, () => {
+    console.log('Started on port ' + port);
 });
