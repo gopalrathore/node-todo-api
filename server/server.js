@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 
 app.post('/todos', (req, res) => {
 
-    if (req.headers.username == "test1") {
+    // if (req.headers.username == "test1") {
 
         var todo = new Todo({
             text: req.body.text
@@ -31,9 +31,9 @@ app.post('/todos', (req, res) => {
             res.status(400).send(e);
         });
 
-    }else {
-        return res.status(400).send();
-    }
+    // }else {
+    //     return res.status(400).send();
+    // }
 
 
 });
